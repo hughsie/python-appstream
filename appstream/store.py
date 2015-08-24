@@ -20,9 +20,9 @@ import gzip
 
 class Store(object):
     """ A quick'n'dirty store """
-    def __init__(self):
+    def __init__(self, origin=None):
         """ Set defaults """
-        self.origin = 'lvfs'
+        self.origin = origin
         self.components = {}
 
     def to_xml(self):
