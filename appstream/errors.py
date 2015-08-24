@@ -16,9 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA
 
-from store import Store
-from component import Component
-from component import Checksum
-from component import Provide
-from component import Release
-from errors import ParseError, ValidationError
+class ParseError(Exception):
+    pass
+class ValidationError(Exception):
+    pass

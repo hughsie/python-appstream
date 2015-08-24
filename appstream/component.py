@@ -18,6 +18,8 @@
 
 import xml.etree.ElementTree as ET
 
+from errors import ParseError, ValidationError
+
 def _parse_desc(node):
     """ A quick'n'dirty description parser """
     lines = ET.tostring(node[0]).split('\n')
@@ -155,39 +157,42 @@ class Component(object):
     def validate(self):
         """ Parse XML data """
         if not self.id or len(self.id) == 0:
-            raise RuntimeError('No <id> tag')
+            raise ValidationError('No <id> tag')
         if not self.name or len(self.name) == 0:
-            raise RuntimeError('No <name> tag')
+            raise ValidationError('No <name> tag')
         if not self.summary or len(self.summary) == 0:
-            raise RuntimeError('No <summary> tag')
+            raise ValidationError('No <summary> tag')
         if not self.description or len(self.description) == 0:
-            raise RuntimeError('No <description> tag')
+            raise ValidationError('No <description> tag')
         if self.kind == 'firmware':
             if len(self.provides) == 0:
-                raise RuntimeError('No <provides> tag')
+                raise ValidationError('No <provides> tag')
             if len(self.releases) == 0:
-                raise RuntimeError('No <release> tag')
+                raise ValidationError('No <release> tag')
         if not self.metadata_license or len(self.metadata_license) == 0:
-            raise RuntimeError('No <metadata_license> tag')
+            raise ValidationError('No <metadata_license> tag')
         if self.metadata_license not in ['CC0-1.0']:
-            raise RuntimeError('Invalid <metadata_license> tag')
+            raise ValidationError('Invalid <metadata_license> tag')
         if not self.project_license or len(self.project_license) == 0:
-            raise RuntimeError('No <project_license> tag')
+            raise ValidationError('No <project_license> tag')
         if not self.developer_name or len(self.developer_name) == 0:
-            raise RuntimeError('No <developer_name> tag')
+            raise ValidationError('No <developer_name> tag')
 
         # verify release objects
         for rel in self.releases:
             if not rel.version or len(rel.version) == 0:
-                raise RuntimeError('No version in <release> tag')
+                raise ValidationError('No version in <release> tag')
             if rel.timestamp == 0:
-                raise RuntimeError('No timestamp in <release> tag')
+                raise ValidationError('No timestamp in <release> tag')
 
     def parse(self, xml_data):
         """ Parse XML data """
 
         # parse tree
-        root = ET.fromstring(xml_data)
+        try:
+            root = ET.fromstring(xml_data)
+        except ET.ParseError as e:
+            raise ParseError(str(e))
 
         # get type
         if 'type' in root.attrib:

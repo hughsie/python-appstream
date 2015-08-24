@@ -20,6 +20,13 @@ import appstream
 
 def main():
 
+    # parse junk
+    app = appstream.Component()
+    try:
+        app.parse('junk')
+    except appstream.ParseError:
+        pass
+
     data = """<?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2015 Richard Hughes <richard@hughsie.com> -->
 <component type="firmware">
