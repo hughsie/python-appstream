@@ -43,7 +43,7 @@ class Store(object):
         # save compressed file
         xml = self.to_xml()
         with gzip.open(filename, 'wb') as f:
-            f.write(xml)
+            f.write(unicode(xml).encode('utf-8'))
 
     def get_component(self, app_id):
         """ Finds an application from the store """

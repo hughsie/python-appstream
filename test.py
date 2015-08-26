@@ -105,7 +105,7 @@ def main():
   <id>com.hughski.ColorHug.firmware</id>
   <releases>
     <release version="1.2.5" timestamp="1500000000">
-      <description><p>This release adds magic.</p></description>
+      <description><p>This release adds magic®.</p></description>
     </release>
   </releases>
 </component>
