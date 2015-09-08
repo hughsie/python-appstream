@@ -253,15 +253,15 @@ class Component(object):
 
             # <developer_name>
             elif c1.tag == 'developer_name':
-                self.developer_name = c1.text
+                self.developer_name = _join_lines(c1.text)
 
             # <name>
             elif c1.tag == 'name' and not self.name:
-                self.name = c1.text
+                self.name = _join_lines(c1.text)
 
             # <summary>
             elif c1.tag == 'summary' and not self.summary:
-                self.summary = c1.text
+                self.summary = _join_lines(c1.text)
 
             # <description>
             elif c1.tag == 'description' and not self.description:
