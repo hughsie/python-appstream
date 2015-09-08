@@ -34,11 +34,16 @@ def main():
 <component type="firmware">
   <id>com.hughski.ColorHug.firmware</id>
   <name>ColorHug Device Update</name>
-  <summary>Firmware for the Hughski ColorHug Colorimeter</summary>
+  <summary>
+    Firmware for the Hughski ColorHug Colorimeter
+  </summary>
   <description>
     <p>
-      Updating the firmware on your ColorHug device improves performance and
+      Updating 
       adds new features.
+    </p>
+    <p>
+      2nd para.
     </p>
   </description>
   <provides>
@@ -52,10 +57,11 @@ def main():
   <releases>
     <release version="1.2.4" timestamp="1438454314">
       <description>
-        <p>
-          This release adds support for verifying the firmware
-          contents using fwupd.
-        </p>
+        <p>Fixes bugs:</p>
+        <ul>
+          <li>Fix the RC</li>
+          <li>Scale the output</li>
+        </ul>
       </description>
     </release>
   </releases>
@@ -64,19 +70,20 @@ def main():
     app = appstream.Component()
     app.parse(data)
     app.validate()
-    print ("ID:                  %s" % app.id)
-    print ("GUID:                %s" % app.get_provides_by_kind('firmware-flashed')[0].value)
-    print ("Name:                %s" % app.name)
-    print ("Summary:             %s" % app.summary)
-    print ("Description:         %s" % app.description)
-    print ("Homepage:            %s" % app.urls['homepage'])
-    print ("Metadata License:    %s" % app.metadata_license)
-    print ("Project License:     %s" % app.project_license)
-    print ("Developer Name:      %s" % app.developer_name)
+    assert app.id == 'com.hughski.ColorHug.firmware', app.id
+    assert app.name == 'ColorHug Device Update', app.name
+    assert app.summary == 'Firmware for the Hughski ColorHug Colorimeter', app.summary
+    assert app.description == '<p>Updating adds new features.</p><p>2nd para.</p>', app.description
+    assert app.urls['homepage'] == 'http://www.hughski.com/', app.urls['homepage']
+    assert app.metadata_license == 'CC0-1.0', app.metadata_license
+    assert app.project_license == 'GPL-2.0+', app.project_license
+    assert app.developer_name == 'Hughski Limited', app.developer_name
+    tmp = app.get_provides_by_kind('firmware-flashed')[0].value
+    assert tmp == '40338ceb-b966-4eae-adae-9c32edfcc484', tmp
     for rel in app.releases:
-        print ("Release Version:     %s" % rel.version)
-        print ("Release Timestamp:   %s" % rel.timestamp)
-        print ("Release Description: %s" % rel.description)
+        assert rel.version == '1.2.4', rel.version
+        assert rel.timestamp == 1438454314, rel.timestamp
+        assert rel.description == '<p>Fixes bugs:</p><ul><li>Fix the RC</li><li>Scale the output</li></ul>', rel.description
 
     # add extra information for AppStream file
     rel = app.releases[0]
