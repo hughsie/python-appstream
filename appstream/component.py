@@ -82,6 +82,9 @@ class Release(object):
             self.timestamp = int(node.attrib['timestamp'])
         if 'version' in node.attrib:
             self.version = node.attrib['version']
+            # fix up hex value
+            if self.version.startswith('0x'):
+                self.version = str(int(self.version[2:], 16))
         for c3 in node:
             if c3.tag == 'description':
                 self.description = _parse_desc(c3)
