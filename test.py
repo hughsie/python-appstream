@@ -56,6 +56,8 @@ def main():
   <developer_name>Hughski Limited</developer_name>
   <releases>
     <release version="1.2.4" timestamp="1438454314">
+      <size type="installed">123456</size>
+      <size type="download">654321</size>
       <description>
         <p>Fixes bugs:</p>
         <ul>
@@ -83,6 +85,8 @@ def main():
     for rel in app.releases:
         assert rel.version == '1.2.4', rel.version
         assert rel.timestamp == 1438454314, rel.timestamp
+        assert rel.size_installed == 123456, rel.size_installed
+        assert rel.size_download == 654321, rel.size_download
         assert rel.description == '<p>Fixes bugs:</p><ul><li>Fix the RC</li><li>Scale the output</li></ul>', rel.description
 
     # add extra information for AppStream file

@@ -69,6 +69,8 @@ class Release(object):
         self.timestamp = 0
         self.checksums = []
         self.location = None
+        self.size_installed = 0
+        self.size_download = 0
 
     def add_checksum(self, csum):
         """ Add a checksum to a release object """
@@ -83,9 +85,20 @@ class Release(object):
         for c3 in node:
             if c3.tag == 'description':
                 self.description = _parse_desc(c3)
+            if c3.tag == 'size':
+                if 'type' not in c3.attrib:
+                    continue
+                if c3.attrib['type'] == 'installed':
+                    self.size_installed = int(c3.text)
+                if c3.attrib['type'] == 'download':
+                    self.size_download = int(c3.text)
 
     def to_xml(self):
         xml = '      <release version="%s" timestamp="%i">\n' % (self.version, self.timestamp)
+        if self.size_installed > 0:
+            xml += '        <size type="installed">%i</size>\n' % self.size_installed
+        if self.size_download > 0:
+            xml += '        <size type="download">%i</size>\n' % self.size_download
         if self.location:
             xml += '        <location>%s</location>\n' % self.location
         for csum in self.checksums:
