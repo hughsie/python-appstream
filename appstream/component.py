@@ -60,6 +60,15 @@ class Checksum(object):
         self.filename = None
     def to_xml(self):
         return '        <checksum filename="%s" target="%s" type="sha1">%s</checksum>\n' % (self.filename, self.target, self.value)
+    def _parse_tree(self, node):
+        """ Parse a <checksum> object """
+        if 'filename' in node.attrib:
+            self.filename = node.attrib['filename']
+        if 'type' in node.attrib:
+            self.kind = node.attrib['type']
+        if 'target' in node.attrib:
+            self.target = node.attrib['target']
+        self.value = node.text
 
 class Release(object):
     def __init__(self):
@@ -95,6 +104,10 @@ class Release(object):
                     self.size_installed = int(c3.text)
                 if c3.attrib['type'] == 'download':
                     self.size_download = int(c3.text)
+            elif c3.tag == 'checksum':
+                csum = Checksum()
+                csum._parse_tree(c3)
+                self.add_checksum(csum)
 
     def to_xml(self):
         xml = '      <release version="%s" timestamp="%i">\n' % (self.version, self.timestamp)

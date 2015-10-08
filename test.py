@@ -58,6 +58,7 @@ def main():
     <release version="1.2.4" timestamp="1438454314">
       <size type="installed">123456</size>
       <size type="download">654321</size>
+      <checksum target="content" filename="firmware.bin" type="sha1">deadbeef</checksum>
       <description>
         <p>Fixes bugs:</p>
         <ul>
@@ -82,12 +83,19 @@ def main():
     assert app.developer_name == 'Hughski Limited', app.developer_name
     tmp = app.get_provides_by_kind('firmware-flashed')[0].value
     assert tmp == '40338ceb-b966-4eae-adae-9c32edfcc484', tmp
+    assert len(app.releases) == 1
     for rel in app.releases:
         assert rel.version == '1.2.4', rel.version
         assert rel.timestamp == 1438454314, rel.timestamp
         assert rel.size_installed == 123456, rel.size_installed
         assert rel.size_download == 654321, rel.size_download
         assert rel.description == '<p>Fixes bugs:</p><ul><li>Fix the RC</li><li>Scale the output</li></ul>', rel.description
+        assert len(rel.checksums) == 1, len(rel.checksums)
+        for csum in rel.checksums:
+            assert csum.kind == 'sha1', csum.kind
+            assert csum.target == 'content', csum.target
+            assert csum.value == 'deadbeef', csum.value
+            assert csum.filename == 'firmware.bin', csum.filename
 
     # add extra information for AppStream file
     rel = app.releases[0]
