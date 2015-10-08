@@ -90,6 +90,10 @@ class Release(object):
 
     def add_checksum(self, csum):
         """ Add a checksum to a release object """
+        for csum_tmp in self.checksums:
+            if csum_tmp.target == csum.target:
+                self.checksums.remove(csum_tmp)
+                break
         self.checksums.append(csum)
 
     def _parse_tree(self, node):
