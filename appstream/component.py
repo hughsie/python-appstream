@@ -81,6 +81,13 @@ class Release(object):
         self.size_installed = 0
         self.size_download = 0
 
+    def get_checksum_by_target(self, target):
+        """ returns a checksum of a specific kind """
+        for csum in self.checksums:
+            if csum.target == target:
+                return csum
+        return None
+
     def add_checksum(self, csum):
         """ Add a checksum to a release object """
         self.checksums.append(csum)
