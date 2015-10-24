@@ -20,6 +20,13 @@
 
 import xml.etree.ElementTree as ET
 
+try:
+    # Py2.7 and newer
+    from xml.etree import ParseError as StdlibParseError
+except ImportError:
+    # Py2.6 and older
+    from xml.parsers.expat import ExpatError as StdlibParseError
+
 from errors import ParseError, ValidationError
 
 def _join_lines(txt):
@@ -250,7 +257,7 @@ class Component(object):
         # parse tree
         try:
             root = ET.fromstring(xml_data)
-        except ET.ParseError as e:
+        except StdlibParseError as e:
             raise ParseError(str(e))
 
         # get type
