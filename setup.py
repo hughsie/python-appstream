@@ -26,7 +26,7 @@ long_description = f.read().strip()
 f.close()
 
 requires = [
-    'lxml',
+    # Nothing!
 ]
 
 version = '0.1'
