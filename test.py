@@ -18,6 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA
 
+from __future__ import print_function
+
 import appstream
 
 def main():
@@ -132,7 +134,7 @@ def main():
     app = appstream.Component()
     app.parse(data)
     store.add(app)
-    print store.to_xml()
+    print(store.to_xml().encode('utf-8'))
 
     store.to_file('/tmp/firmware.xml.gz')
 
