@@ -22,7 +22,7 @@ import xml.etree.ElementTree as ET
 
 try:
     # Py2.7 and newer
-    from xml.etree import ParseError as StdlibParseError
+    from xml.etree.ElementTree import ParseError as StdlibParseError
 except ImportError:
     # Py2.6 and older
     from xml.parsers.expat import ExpatError as StdlibParseError
