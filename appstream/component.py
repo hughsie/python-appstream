@@ -27,7 +27,7 @@ except ImportError:
     # Py2.6 and older
     from xml.parsers.expat import ExpatError as StdlibParseError
 
-from errors import ParseError, ValidationError
+from appstream.errors import ParseError, ValidationError
 
 def _join_lines(txt):
     """ Remove whitespace from XML input """
