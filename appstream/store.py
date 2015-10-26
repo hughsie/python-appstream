@@ -44,7 +44,7 @@ class Store(object):
         xml = self.to_xml()
         f = gzip.open(filename, 'wb')
         try:
-            f.write(unicode(xml).encode('utf-8'))
+            f.write(xml.encode('utf-8'))
         finally:
             f.close()
 
