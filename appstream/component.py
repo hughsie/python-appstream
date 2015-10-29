@@ -31,6 +31,7 @@ from appstream.errors import ParseError, ValidationError
 
 def _join_lines(txt):
     """ Remove whitespace from XML input """
+    txt = txt or ''  # Handle NoneType input values
     val = ''
     lines = txt.split('\n')
     for line in lines:
