@@ -255,10 +255,15 @@ class Component(object):
         """ Parse XML data """
 
         # parse tree
-        try:
-            root = ET.fromstring(xml_data)
-        except StdlibParseError as e:
-            raise ParseError(str(e))
+        if isinstance(xml_data, ET.Element):
+            # Presumably, this has already been parsed into a tree
+            root = xml_data
+        else:
+            # Otherwise, treat it as textual xml data.
+            try:
+                root = ET.fromstring(xml_data)
+            except StdlibParseError as e:
+                raise ParseError(str(e))
 
         # get type
         if 'type' in root.attrib:

@@ -20,6 +20,18 @@
 
 import gzip
 
+import xml.etree.ElementTree as ET
+
+try:
+    # Py2.7 and newer
+    from xml.etree.ElementTree import ParseError as StdlibParseError
+except ImportError:
+    # Py2.6 and older
+    from xml.parsers.expat import ExpatError as StdlibParseError
+
+from appstream.errors import ParseError
+from appstream.component import Component
+
 class Store(object):
     """ A quick'n'dirty store """
     def __init__(self, origin=None):
@@ -63,3 +75,19 @@ class Store(object):
             old.releases.extend(component.releases)
             return
         self.components[component.id] = component
+
+    def parse(self, xml_data):
+        """ Parse XML data """
+
+        # parse tree
+        try:
+            root = ET.fromstring(xml_data)
+        except StdlibParseError as e:
+            raise ParseError(str(e))
+
+        self.origin = root.attrib['origin']
+
+        for child in root:
+            component = Component()
+            component.parse(child)
+            self.components[component.id] = component
