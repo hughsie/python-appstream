@@ -164,6 +164,7 @@ class Component(object):
         self.kind = None
         self.provides = []
         self.name = None
+        self.pkgname = None
         self.summary = None
         self.description = None
         self.urls = {}
@@ -176,6 +177,8 @@ class Component(object):
         xml = '  <component type="firmware">\n'
         if self.id:
             xml += '    <id>%s</id>\n' % self.id
+        if self.pkgname:
+            xml += '    <pkgname>%s</pkgname>\n' % self.pkgname
         if self.name:
             xml += '    <name>%s</name>\n' % self.name
         if self.summary:
@@ -311,6 +314,10 @@ class Component(object):
             # <name>
             elif c1.tag == 'name' and not self.name:
                 self.name = _join_lines(c1.text)
+
+            # <pkgname>
+            elif c1.tag == 'pkgname' and not self.pkgname:
+                self.pkgname = _join_lines(c1.text)
 
             # <summary>
             elif c1.tag == 'summary' and not self.summary:
