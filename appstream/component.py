@@ -168,6 +168,7 @@ class Component(object):
         self.summary = None
         self.description = None
         self.urls = {}
+        self.icons = {}
         self.metadata_license = None
         self.project_license = None
         self.developer_name = None
@@ -189,6 +190,8 @@ class Component(object):
             xml += '    <description>%s</description>\n' % self.description
         for key in self.urls:
             xml += '    <url type="%s">%s</url>\n' % (key, self.urls[key])
+        for key in self.icons:
+            xml += '    <icon type="%s">%s</icon>\n' % (key, self.icons[key]['value'])
         if len(self.releases) > 0:
             xml += '    <releases>\n'
             for rel in self.releases:
@@ -333,3 +336,8 @@ class Component(object):
                 if 'type' in c1.attrib:
                     key = c1.attrib['type']
                 self.urls[key] = c1.text
+
+            elif c1.tag == 'icon':
+                key = c1.attrib.pop('type', 'unknown')
+                c1.attrib['value'] = c1.text
+                self.icons[key] = self.icons.get(key, []) + [c1.attrib]
