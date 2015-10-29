@@ -29,7 +29,7 @@ requires = [
     # Nothing!
 ]
 
-version = '0.5'
+version = '0.6'
 
 setup(
     name='python-appstream',
