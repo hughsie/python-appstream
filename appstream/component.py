@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA
 
+import sys
 import xml.etree.ElementTree as ET
 
 try:
@@ -28,6 +29,14 @@ except ImportError:
     from xml.parsers.expat import ExpatError as StdlibParseError
 
 from appstream.errors import ParseError, ValidationError
+
+if sys.version_info[0] == 2:
+    # Python2 has a nice basestring base class
+    string_types = (basestring,)
+else:
+    # But python3 has distinct types
+    string_types = (str, bytes)
+
 
 def _join_lines(txt):
     """ Remove whitespace from XML input """
@@ -262,15 +271,15 @@ class Component(object):
         """ Parse XML data """
 
         # parse tree
-        if isinstance(xml_data, ET.Element):
-            # Presumably, this has already been parsed into a tree
-            root = xml_data
-        else:
-            # Otherwise, treat it as textual xml data.
+        if isinstance(xml_data, string_types):
+            # Presumably, this is textual xml data.
             try:
                 root = ET.fromstring(xml_data)
             except StdlibParseError as e:
                 raise ParseError(str(e))
+        else:
+            # Otherwise, assume it has already been parsed into a tree
+            root = xml_data
 
         # get type
         if 'type' in root.attrib:
