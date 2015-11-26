@@ -170,6 +170,7 @@ class Component(object):
     def __init__(self):
         """ Set defaults """
         self.id = None
+        self.update_contact = None
         self.kind = None
         self.provides = []
         self.name = None
@@ -300,7 +301,7 @@ class Component(object):
 
             # <updatecontact>
             elif c1.tag == 'updatecontact' or c1.tag == 'update_contact':
-                continue
+                self.update_contact = c1.text
 
             # <metadata_license>
             elif c1.tag == 'metadata_license':
