@@ -60,6 +60,11 @@ class Store(object):
         finally:
             f.close()
 
+    def from_file(self, filename):
+        """ Open the store from disk """
+        with gzip.open(filename, 'rb') as f:
+            self.parse(f.read())
+
     def get_component(self, app_id):
         """ Finds an application from the store """
         if not app_id in self.components:
