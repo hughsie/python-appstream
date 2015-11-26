@@ -66,6 +66,13 @@ class Store(object):
             return None
         return self.components[app_id]
 
+    def get_components(self):
+        """ Returns all the applications from the store """
+        components = []
+        for app_id in self.components:
+            components.append(self.components[app_id])
+        return components
+
     def add(self, component):
         """ Add component to the store """
 
