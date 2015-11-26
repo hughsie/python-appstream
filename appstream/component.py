@@ -182,6 +182,7 @@ class Component(object):
         self.project_license = None
         self.developer_name = None
         self.releases = []
+        self.kudos = []
 
     def to_xml(self):
         xml = '  <component type="firmware">\n'
@@ -206,6 +207,11 @@ class Component(object):
             for rel in self.releases:
                 xml += rel.to_xml()
             xml += '    </releases>\n'
+        if len(self.kudos) > 0:
+            xml += '    <kudos>\n'
+            for kudo in self.kudos:
+                xml += '      <kudo>%s</kudo>\n' % kudo
+            xml += '    </kudos>\n'
         if len(self.provides) > 0:
             xml += '    <provides>\n'
             for p in self.provides:
@@ -314,6 +320,13 @@ class Component(object):
                     prov = Provide()
                     prov._parse_tree(c2)
                     self.add_provide(prov)
+
+            # <kudos>
+            elif c1.tag == 'kudos':
+                for c2 in c1:
+                    if not c2.tag == 'kudo':
+                        continue
+                    self.kudos.append(c2.text)
 
             # <project_license>
             elif c1.tag == 'project_license' or c1.tag == 'licence':
