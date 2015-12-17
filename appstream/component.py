@@ -29,6 +29,7 @@ except ImportError:
     from xml.parsers.expat import ExpatError as StdlibParseError
 
 from appstream.errors import ParseError, ValidationError
+from appstream.utils import _join_lines, _parse_desc
 
 if sys.version_info[0] == 2:
     # Python2 has a nice basestring base class
@@ -36,37 +37,6 @@ if sys.version_info[0] == 2:
 else:
     # But python3 has distinct types
     string_types = (str, bytes)
-
-
-def _join_lines(txt):
-    """ Remove whitespace from XML input """
-    txt = txt or ''  # Handle NoneType input values
-    val = ''
-    lines = txt.split('\n')
-    for line in lines:
-        stripped = line.strip()
-        if len(stripped) == 0:
-            continue
-        val += stripped + ' '
-    return val.strip()
-
-def _parse_desc(node):
-    """ A quick'n'dirty description parser """
-    desc = ''
-    for n in node:
-        if n.tag == 'p':
-            desc += '<p>' + _join_lines(n.text) + '</p>'
-        elif n.tag == 'ol' or n.tag == 'ul':
-            desc += '<ul>'
-            for c in n:
-                if c.tag == 'li':
-                    desc += '<li>' + _join_lines(c.text) + '</li>'
-                else:
-                    raise ParseError('Expected <li> in <%s>, got <%s>' % (n.tag, c.tag))
-            desc += '</ul>'
-        else:
-            raise ParseError('Expected <p>, <ul>, <ol> in <%s>, got <%s>' % (node.tag, n.tag))
-    return desc
 
 class Checksum(object):
     def __init__(self):
