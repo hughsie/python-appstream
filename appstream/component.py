@@ -62,10 +62,10 @@ def _parse_desc(node):
                 if c.tag == 'li':
                     desc += '<li>' + _join_lines(c.text) + '</li>'
                 else:
-                    raise ParseError('Expected <li> in <%s>, got <%s>', n.tag, c.tag)
+                    raise ParseError('Expected <li> in <%s>, got <%s>' % (n.tag, c.tag))
             desc += '</ul>'
         else:
-            raise ParseError('Expected <p>, <ul>, <ol> in <%s>, got <%s>', node.tag, n.tag)
+            raise ParseError('Expected <p>, <ul>, <ol> in <%s>, got <%s>' % (node.tag, n.tag))
     return desc
 
 class Checksum(object):
