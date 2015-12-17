@@ -97,6 +97,7 @@ class Release(object):
         self.location = None
         self.size_installed = 0
         self.size_download = 0
+        self.urgency = None
 
     def get_checksum_by_target(self, target):
         """ returns a checksum of a specific kind """
@@ -117,6 +118,8 @@ class Release(object):
         """ Parse a <release> object """
         if 'timestamp' in node.attrib:
             self.timestamp = int(node.attrib['timestamp'])
+        if 'urgency' in node.attrib:
+            self.urgency = node.attrib['urgency']
         if 'version' in node.attrib:
             self.version = node.attrib['version']
             # fix up hex value
@@ -138,7 +141,14 @@ class Release(object):
                 self.add_checksum(csum)
 
     def to_xml(self):
-        xml = '      <release version="%s" timestamp="%i">\n' % (self.version, self.timestamp)
+        xml = '      <release'
+        if self.version:
+            xml += ' version="%s"' % self.version
+        if self.timestamp:
+            xml += ' timestamp="%i"' % self.timestamp
+        if self.urgency:
+            xml += ' urgency="%s"' % self.urgency
+        xml += '>\n'
         if self.size_installed > 0:
             xml += '        <size type="installed">%i</size>\n' % self.size_installed
         if self.size_download > 0:

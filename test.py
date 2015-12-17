@@ -57,7 +57,7 @@ def main():
   <updatecontact>richard_at_hughsie.com</updatecontact>
   <developer_name>Hughski Limited</developer_name>
   <releases>
-    <release version="1.2.4" timestamp="1438454314">
+    <release version="1.2.4" timestamp="1438454314" urgency="high">
       <size type="installed">123456</size>
       <size type="download">654321</size>
       <checksum target="content" filename="firmware.bin" type="sha1">deadbeef</checksum>
@@ -92,6 +92,7 @@ def main():
         assert rel.size_installed == 123456, rel.size_installed
         assert rel.size_download == 654321, rel.size_download
         assert rel.description == '<p>Fixes bugs:</p><ul><li>Fix the RC</li><li>Scale the output</li></ul>', rel.description
+        assert rel.urgency == 'high', rel.urgency
         assert len(rel.checksums) == 1, len(rel.checksums)
         for csum in rel.checksums:
             assert csum.kind == 'sha1', csum.kind
