@@ -177,6 +177,8 @@ class Component(object):
             xml += '    <summary>%s</summary>\n' % self.summary
         if self.developer_name:
             xml += '    <developer_name>%s</developer_name>\n' % self.developer_name
+        if self.project_license:
+            xml += '    <project_license>%s</project_license>\n' % self.project_license
         if self.description:
             xml += '    <description>%s</description>\n' % self.description
         for key in self.urls:
