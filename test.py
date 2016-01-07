@@ -51,6 +51,10 @@ def main():
   <provides>
     <firmware type="flashed">40338ceb-b966-4eae-adae-9c32edfcc484</firmware>
   </provides>
+  <keywords>
+    <keyword>one</keyword>
+    <keyword>two</keyword>
+  </keywords>
   <url type="homepage">http://www.hughski.com/</url>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
@@ -86,6 +90,7 @@ def main():
     tmp = app.get_provides_by_kind('firmware-flashed')[0].value
     assert tmp == '40338ceb-b966-4eae-adae-9c32edfcc484', tmp
     assert len(app.releases) == 1
+    assert len(app.keywords) == 2
     for rel in app.releases:
         assert rel.version == '1.2.4', rel.version
         assert rel.timestamp == 1438454314, rel.timestamp

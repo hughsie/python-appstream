@@ -164,6 +164,7 @@ class Component(object):
         self.developer_name = None
         self.releases = []
         self.kudos = []
+        self.keywords = []
 
     def to_xml(self):
         xml = '  <component type="firmware">\n'
@@ -195,6 +196,11 @@ class Component(object):
             for kudo in self.kudos:
                 xml += '      <kudo>%s</kudo>\n' % kudo
             xml += '    </kudos>\n'
+        if len(self.keywords) > 0:
+            xml += '    <keywords>\n'
+            for keyword in self.keywords:
+                xml += '      <keyword>%s</keyword>\n' % keyword
+            xml += '    </keywords>\n'
         if len(self.provides) > 0:
             xml += '    <provides>\n'
             for p in self.provides:
@@ -310,6 +316,13 @@ class Component(object):
                     if not c2.tag == 'kudo':
                         continue
                     self.kudos.append(c2.text)
+
+            # <keywords>
+            elif c1.tag == 'keywords':
+                for c2 in c1:
+                    if not c2.tag == 'keyword':
+                        continue
+                    self.keywords.append(c2.text)
 
             # <project_license>
             elif c1.tag == 'project_license' or c1.tag == 'licence':
