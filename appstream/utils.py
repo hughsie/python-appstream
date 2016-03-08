@@ -62,7 +62,7 @@ def _parse_desc(node):
 def validate_description(xml_data):
     """ Validate the description for validity """
     try:
-        root = ET.fromstring(xml_data)
+        root = ET.fromstring('<document>' + xml_data + '</document>')
     except StdlibParseError as e:
         raise ParseError(str(e))
     return _parse_desc(root)

@@ -33,13 +33,17 @@ Enhancemets:
 - Update Microcode to dave.
 - Update TGC function WINS test.
 """
-    print(appstream.utils.import_description(test_data))
+    xml = appstream.utils.import_description(test_data)
+    print(xml)
+    assert appstream.utils.validate_description(xml)
 
     test_data = """
 1. First version to support Win7 OS.
 2. First version to support dock.
 """
-    print(appstream.utils.import_description(test_data))
+    xml = appstream.utils.import_description(test_data)
+    print(xml)
+    assert appstream.utils.validate_description(xml)
 
     # parse junk
     app = appstream.Component()
