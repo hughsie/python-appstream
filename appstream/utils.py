@@ -66,3 +66,50 @@ def validate_description(xml_data):
     except StdlibParseError as e:
         raise ParseError(str(e))
     return _parse_desc(root)
+
+def _import_description_to_list_element(text):
+    if len(text) < 5:
+        return None
+    if text.startswith('- '):
+        return text[2:]
+    if text[0].isdigit and text[1:3] == '. ':
+        return text[3:]
+    return None
+
+def _import_description_sentence_case(text):
+    return text[0].upper() + text[1:]
+
+def import_description(text):
+    """ Convert ASCII text to AppStream markup format """
+    xml = ''
+    is_in_ul = False
+    for line in text.split('\n'):
+
+        # don't include whitespace
+        line = line.strip()
+        if len(line) == 0:
+            continue
+
+        # detected as a list element?
+        line_li = _import_description_to_list_element(line)
+        if line_li:
+            # first list element
+            if not is_in_ul:
+                xml += '<ul>\n'
+                is_in_ul = True
+            xml += '<li>' + _import_description_sentence_case(line_li) + '</li>\n'
+            continue
+
+        # done with the list
+        if is_in_ul:
+            xml += '</ul>\n'
+            is_in_ul = False
+
+        # regular paragraph
+        xml += '<p>' + _import_description_sentence_case(line) + '</p>\n'
+
+    # no trailing paragraph
+    if is_in_ul:
+        xml += '</ul>\n'
+
+    return xml

@@ -24,6 +24,23 @@ import appstream
 
 def main():
 
+    test_data = """
+ Fixes:
+- BIOS boot successfully with special food.
+- No related beep codes displayed when HDD disabled.
+
+Enhancemets:
+- Update Microcode to dave.
+- Update TGC function WINS test.
+"""
+    print(appstream.utils.import_description(test_data))
+
+    test_data = """
+1. First version to support Win7 OS.
+2. First version to support dock.
+"""
+    print(appstream.utils.import_description(test_data))
+
     # parse junk
     app = appstream.Component()
     try:
