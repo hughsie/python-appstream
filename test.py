@@ -82,7 +82,7 @@ Enhancemets:
   <updatecontact>richard_at_hughsie.com</updatecontact>
   <developer_name>Hughski Limited</developer_name>
   <releases>
-    <release version="1.2.4" timestamp="1438454314" urgency="high">
+    <release version="1.2.4" timestamp="1438454314" date="2016-02-25" urgency="high">
       <size type="installed">123456</size>
       <size type="download">654321</size>
       <checksum target="content" filename="firmware.bin" type="sha1">deadbeef</checksum>
@@ -114,7 +114,7 @@ Enhancemets:
     assert len(app.keywords) == 2
     for rel in app.releases:
         assert rel.version == '1.2.4', rel.version
-        assert rel.timestamp == 1438454314, rel.timestamp
+        assert rel.timestamp == 1456358400, rel.timestamp
         assert rel.size_installed == 123456, rel.size_installed
         assert rel.size_download == 654321, rel.size_download
         assert rel.description == '<p>Fixes bugs:</p><ul><li>Fix the RC</li><li>Scale the output</li></ul>', rel.description

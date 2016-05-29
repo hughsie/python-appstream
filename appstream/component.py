@@ -20,6 +20,7 @@
 
 import sys
 import xml.etree.ElementTree as ET
+import dateutil.parser
 
 try:
     # Py2.7 and newer
@@ -88,6 +89,9 @@ class Release(object):
         """ Parse a <release> object """
         if 'timestamp' in node.attrib:
             self.timestamp = int(node.attrib['timestamp'])
+        if 'date' in node.attrib:
+            dt = dateutil.parser.parse(node.attrib['date'])
+            self.timestamp = int(dt.strftime("%s"))
         if 'urgency' in node.attrib:
             self.urgency = node.attrib['urgency']
         if 'version' in node.attrib:
