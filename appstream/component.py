@@ -136,6 +136,84 @@ class Release(object):
         xml += '      </release>\n'
         return xml
 
+class Image(object):
+    def __init__(self):
+        """ Set defaults """
+        self.kind = None
+        self.width = 0
+        self.height = 0
+        self.url = None
+
+    def to_xml(self):
+        xml = '        <image'
+        if self.kind:
+            xml += ' type="%s"' % self.kind
+        if self.width > 0:
+            xml += ' width="%i"' % self.width
+        if self.height > 0:
+            xml += ' height="%i"' % self.height
+        xml += '>'
+        if self.url:
+            xml += self.url
+        xml += '</image>\n'
+        return xml
+
+    def _parse_tree(self, node):
+        """ Parse a <image> object """
+        if 'type' in node.attrib:
+            self.kind = node.attrib['type']
+        if 'width' in node.attrib:
+            self.width = int(node.attrib['width'])
+        if 'height' in node.attrib:
+            self.height = int(node.attrib['height'])
+        self.url = node.text
+
+class Screenshot(object):
+    def __init__(self):
+        """ Set defaults """
+        self.kind = None
+        self.caption = None
+        self.images = []
+
+    def get_image_by_kind(self, kind):
+        """ returns a image of a specific kind """
+        for ss in self.images:
+            if ss.kind == kind:
+                return ss
+        return None
+
+    def add_image(self, im):
+        """ Add a image to a screenshot object """
+        for im_tmp in self.images:
+            if im_tmp.kind == im.kind:
+                self.images.remove(im_tmp)
+                break
+        self.images.append(im)
+
+    def _parse_tree(self, node):
+        """ Parse a <screenshot> object """
+        if 'type' in node.attrib:
+            self.kind = node.attrib['type']
+        for c3 in node:
+            if c3.tag == 'caption':
+                self.caption = _parse_desc(c3)
+            elif c3.tag == 'image':
+                im = Image()
+                im._parse_tree(c3)
+                self.add_image(im)
+
+    def to_xml(self):
+        xml = '      <screenshot'
+        if self.kind:
+            xml += ' type="%s"' % self.kind
+        xml += '>\n'
+        for im in self.images:
+            xml += im.to_xml()
+        if self.caption:
+            xml += '        <caption>%s</caption>\n' % self.caption
+        xml += '      </screenshot>\n'
+        return xml
+
 class Provide(object):
     def __init__(self):
         """ Set defaults """
@@ -167,6 +245,7 @@ class Component(object):
         self.project_license = None
         self.developer_name = None
         self.releases = []
+        self.screenshots = []
         self.kudos = []
         self.keywords = []
 
@@ -195,6 +274,11 @@ class Component(object):
             for rel in self.releases:
                 xml += rel.to_xml()
             xml += '    </releases>\n'
+        if len(self.screenshots) > 0:
+            xml += '    <screenshots>\n'
+            for rel in self.screenshots:
+                xml += rel.to_xml()
+            xml += '    </screenshots>\n'
         if len(self.kudos) > 0:
             xml += '    <kudos>\n'
             for kudo in self.kudos:
@@ -219,6 +303,12 @@ class Component(object):
             if r.version == release.version:
                 return
         self.releases.append(release)
+
+    def add_screenshot(self, screenshot):
+        """ Add a screenshot object if it does not already exist """
+        if screenshot in self.screenshots:
+            return
+        self.screenshots.append(screenshot)
 
     def add_provide(self, provide):
         """ Add a provide object if it does not already exist """
@@ -250,6 +340,8 @@ class Component(object):
                 raise ValidationError('No <provides> tag')
             if len(self.releases) == 0:
                 raise ValidationError('No <release> tag')
+            if len(self.screenshots) == 0:
+                raise ValidationError('No <screenshot> tag')
         if not self.metadata_license or len(self.metadata_license) == 0:
             raise ValidationError('No <metadata_license> tag')
         if self.metadata_license not in ['CC0-1.0']:
@@ -306,6 +398,14 @@ class Component(object):
                         rel = Release()
                         rel._parse_tree(c2)
                         self.add_release(rel)
+
+            # <screenshots>
+            elif c1.tag == 'screenshots':
+                for c2 in c1:
+                    if c2.tag == 'screenshot':
+                        ss = Screenshot()
+                        ss._parse_tree(c2)
+                        self.add_screenshot(ss)
 
             # <provides>
             elif c1.tag == 'provides':

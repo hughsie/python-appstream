@@ -95,6 +95,17 @@ Enhancemets:
       </description>
     </release>
   </releases>
+  <screenshots>
+    <screenshot type="default">
+      <image type="source">http://a.png</image>
+      <image type="thumbnail" height="351" width="624">http://b.png</image>
+      <caption><p>This is a caption</p></caption>
+    </screenshot>
+    <screenshot>
+      <image>http://c.png</image>
+      <caption>No markup</caption>
+    </screenshot>
+  </screenshots>
 </component>
 """
     app = appstream.Component()
@@ -125,6 +136,25 @@ Enhancemets:
             assert csum.target == 'content', csum.target
             assert csum.value == 'deadbeef', csum.value
             assert csum.filename == 'firmware.bin', csum.filename
+
+    # screenshots
+    assert len(app.screenshots) == 2, app.screenshots
+    ss = app.screenshots[0]
+    assert ss.kind == 'default'
+    assert ss.caption == '<p>This is a caption</p>', ss.caption
+    assert len(ss.images) == 2, ss.images
+    im = ss.images[0]
+    assert im.kind == 'source', im.kind
+    assert im.height == 0, im.height
+    assert im.width == 0, im.width
+    assert im.url == 'http://a.png', im.url
+    im = ss.images[1]
+    assert im.kind == 'thumbnail', im.kind
+    assert im.height == 351, im.height
+    assert im.width == 624, im.width
+    assert im.url == 'http://b.png', im.url
+    ss = app.screenshots[1]
+    assert ss.caption == '<p>No markup</p>', ss.caption
 
     # add extra information for AppStream file
     rel = app.releases[0]
