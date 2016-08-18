@@ -24,6 +24,10 @@ import appstream
 
 def main():
 
+    # test import
+    ss = appstream.Screenshot()
+    print(ss)
+
     test_data = """
  Fixes:
 - BIOS boot successfully with special food.

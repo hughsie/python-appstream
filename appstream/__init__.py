@@ -22,5 +22,7 @@ from appstream.store import Store
 from appstream.component import Component
 from appstream.component import Checksum
 from appstream.component import Provide
+from appstream.component import Image
 from appstream.component import Release
+from appstream.component import Screenshot
 from appstream.errors import ParseError, ValidationError
