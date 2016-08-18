@@ -44,6 +44,8 @@ def _join_lines(txt):
 def _parse_desc(node):
     """ A quick'n'dirty description parser """
     desc = ''
+    if len(node) == 0:
+        return '<p>' + node.text + '</p>'
     for n in node:
         if n.tag == 'p':
             desc += '<p>' + _join_lines(n.text) + '</p>'
