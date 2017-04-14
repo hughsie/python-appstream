@@ -446,7 +446,18 @@ class Component(object):
                 raise ValidationError('No <screenshot> tag')
         if not self.metadata_license or len(self.metadata_license) == 0:
             raise ValidationError('No <metadata_license> tag')
-        if self.metadata_license not in ['CC0-1.0']:
+        valid_licenses = [
+            'CC0-1.0',
+            'CC-BY-3.0',
+            'CC-BY-4.0',
+            'CC-BY-SA-3.0',
+            'CC-BY-SA-4.0',
+            'GFDL-1.1',
+            'GFDL-1.2',
+            'GFDL-1.3',
+            'FSFAP'
+        ]
+        if self.metadata_license not in valid_licenses:
             raise ValidationError('Invalid <metadata_license> tag')
         if not self.project_license or len(self.project_license) == 0:
             raise ValidationError('No <project_license> tag')
