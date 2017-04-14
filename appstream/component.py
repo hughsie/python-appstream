@@ -21,6 +21,7 @@
 import sys
 import xml.etree.ElementTree as ET
 import dateutil.parser
+from datetime import datetime
 
 try:
     # Py2.7 and newer
@@ -57,6 +58,87 @@ class Checksum(object):
         if 'target' in node.attrib:
             self.target = node.attrib['target']
         self.value = node.text
+
+class Review(object):
+    def __init__(self):
+        """ Set defaults """
+        self.id = None
+        self.summary = None
+        self.description = None
+        self.locale = None
+        self.karma = 0
+        self.score = 0
+        self.rating = 0
+        self.version = None
+        self.reviewer_id = None
+        self.reviewer_name = None
+        self.date = None
+        self.metadata = {}
+
+    def _parse_tree(self, node):
+        """ Parse a <review> object """
+        if 'date' in node.attrib:
+            dt = dateutil.parser.parse(node.attrib['date'])
+            self.date = int(dt.strftime("%s"))
+        if 'id' in node.attrib:
+            self.id = node.attrib['id']
+        if 'karma' in node.attrib:
+            self.karma = int(node.attrib['karma'])
+        if 'score' in node.attrib:
+            self.score = int(node.attrib['score'])
+        if 'rating' in node.attrib:
+            self.rating = int(node.attrib['rating'])
+        for c3 in node:
+            if c3.tag == 'lang':
+                self.locale = c3.text
+            if c3.tag == 'version':
+                self.version = c3.text
+            if c3.tag == 'reviewer_id':
+                self.reviewer_id = c3.text
+            if c3.tag == 'reviewer_name':
+                self.reviewer_name = c3.text
+            if c3.tag == 'summary':
+                self.summary = c3.text
+            if c3.tag == 'description':
+                self.description = _parse_desc(c3)
+            if c3.tag == 'metadata':
+                for c4 in c3:
+                    if c4.tag == 'value':
+                        if 'key' in c4.attrib:
+                            self.metadata[c4.attrib['key']] = c4.text
+
+    def to_xml(self):
+        xml = '      <review'
+        if self.date:
+            xml += ' date="%s"' % datetime.fromtimestamp(self.date).isoformat()
+        if self.rating:
+            xml += ' rating="%s"' % self.rating
+        if self.score:
+            xml += ' score="%i"' % self.score
+        if self.karma:
+            xml += ' karma="%s"' % self.karma
+        if self.id:
+            xml += ' id="%s"' % self.id
+        xml += '>\n'
+        if self.summary:
+            xml += '        <summary>%s</summary>\n' % self.summary
+        if self.description:
+            xml += '        <description>%s</description>\n' % self.description
+        if self.version:
+            xml += '        <version>%s</version>\n' % self.version
+        if self.reviewer_id:
+            xml += '        <reviewer_id>%s</reviewer_id>\n' % self.reviewer_id
+        if self.reviewer_name:
+            xml += '        <reviewer_name>%s</reviewer_name>\n' % self.reviewer_name
+        if self.locale:
+            xml += '        <lang>%s</lang>\n' % self.locale
+        if len(self.metadata) > 0:
+            xml += '        <metadata>\n'
+            for key in self.metadata:
+                xml += '          <value key=\"%s\">%s</value>\n' % (key, self.metadata[key])
+            xml += '        </metadata>\n'
+        xml += '      </review>\n'
+        return xml
 
 class Release(object):
     def __init__(self):
@@ -245,6 +327,7 @@ class Component(object):
         self.project_license = None
         self.developer_name = None
         self.releases = []
+        self.reviews = []
         self.screenshots = []
         self.kudos = []
         self.keywords = []
@@ -275,6 +358,11 @@ class Component(object):
             for rel in self.releases:
                 xml += rel.to_xml()
             xml += '    </releases>\n'
+        if len(self.reviews) > 0:
+            xml += '    <reviews>\n'
+            for rel in self.reviews:
+                xml += rel.to_xml()
+            xml += '    </reviews>\n'
         if len(self.screenshots) > 0:
             xml += '    <screenshots>\n'
             for rel in self.screenshots:
@@ -309,6 +397,13 @@ class Component(object):
             if r.version == release.version:
                 return
         self.releases.append(release)
+
+    def add_review(self, review):
+        """ Add a release object if it does not already exist """
+        for r in self.reviews:
+            if r.id == review.id:
+                return
+        self.reviews.append(review)
 
     def add_screenshot(self, screenshot):
         """ Add a screenshot object if it does not already exist """
@@ -404,6 +499,14 @@ class Component(object):
                         rel = Release()
                         rel._parse_tree(c2)
                         self.add_release(rel)
+
+            # <reviews>
+            elif c1.tag == 'reviews':
+                for c2 in c1:
+                    if c2.tag == 'review':
+                        rev = Review()
+                        rev._parse_tree(c2)
+                        self.add_review(rev)
 
             # <screenshots>
             elif c1.tag == 'screenshots':

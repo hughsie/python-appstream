@@ -99,6 +99,19 @@ Enhancemets:
       </description>
     </release>
   </releases>
+  <reviews>
+    <review date="2016-09-15" rating="80" score="5" karma="-1" id="17">
+    <summary>Hello world</summary>
+    <description><p>Mighty Fine</p></description>
+    <version>1.2.3</version>
+    <reviewer_id>deadbeef</reviewer_id>
+    <reviewer_name>Richard Hughes</reviewer_name>
+    <lang>en_GB</lang>
+    <metadata>
+    <value key="foo">bar</value>
+    </metadata>
+    </review>
+  </reviews>
   <screenshots>
     <screenshot type="default">
       <image type="source">http://a.png</image>
@@ -140,6 +153,22 @@ Enhancemets:
             assert csum.target == 'content', csum.target
             assert csum.value == 'deadbeef', csum.value
             assert csum.filename == 'firmware.bin', csum.filename
+
+    assert len(app.reviews) == 1
+    for rev in app.reviews:
+        assert rev.id == '17', rev.id
+        assert rev.summary == 'Hello world', rev.summary
+        assert rev.description == '<p>Mighty Fine</p>', rev.description
+        assert rev.version == '1.2.3', rev.version
+        assert rev.reviewer_id == 'deadbeef', rev.reviewer_id
+        assert rev.reviewer_name == 'Richard Hughes', rev.reviewer_name
+        assert rev.locale == 'en_GB', rev.locale
+        assert rev.karma == -1, rev.karma
+        assert rev.score == 5, rev.score
+        assert rev.rating == 80, rev.rating
+        assert rev.date == 1473894000, rev.date
+        assert len(rev.metadata) == 1
+        assert rev.metadata['foo'] == 'bar', rev.metadata
 
     # screenshots
     assert len(app.screenshots) == 2, app.screenshots
