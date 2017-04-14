@@ -441,6 +441,7 @@ class Component(object):
                 raise ValidationError('No <provides> tag')
             if len(self.releases) == 0:
                 raise ValidationError('No <release> tag')
+        if self.kind == 'desktop':
             if len(self.screenshots) == 0:
                 raise ValidationError('No <screenshot> tag')
         if not self.metadata_license or len(self.metadata_license) == 0:
