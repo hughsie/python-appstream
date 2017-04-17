@@ -123,6 +123,9 @@ Enhancemets:
       <caption>No markup</caption>
     </screenshot>
   </screenshots>
+  <custom>
+    <value key="foo">bar</value>
+  </custom>
 </component>
 """
     app = appstream.Component()
@@ -188,6 +191,10 @@ Enhancemets:
     assert im.url == 'http://b.png', im.url
     ss = app.screenshots[1]
     assert ss.caption == '<p>No markup</p>', ss.caption
+
+    # custom metadata
+    assert 'foo' in app.custom, app.custom
+    assert app.custom['foo'] == 'bar', app.custom
 
     # add extra information for AppStream file
     rel = app.releases[0]
