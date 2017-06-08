@@ -308,6 +308,22 @@ class Provide(object):
                 self.kind = 'firmware-flashed'
             self.value = node.text.lower()
 
+class Require(object):
+    def __init__(self):
+        """ Set defaults """
+        self.kind = None
+        self.compare = None
+        self.version = None
+        self.value = None
+    def _parse_tree(self, node):
+        """ Parse a <require> object """
+        self.kind = node.tag
+        if 'compare' in node.attrib:
+            self.compare = node.attrib['compare']
+        if 'version' in node.attrib:
+            self.version = node.attrib['version']
+        self.value = node.text
+
 class Component(object):
     """ A quick'n'dirty MetaInfo parser """
 
@@ -317,6 +333,7 @@ class Component(object):
         self.update_contact = None
         self.kind = None
         self.provides = []
+        self.requires = []
         self.name = None
         self.pkgname = None
         self.summary = None
@@ -389,6 +406,21 @@ class Component(object):
             for p in self.provides:
                 xml += '      <firmware type="flashed">%s</firmware>\n' % p.value
             xml += '    </provides>\n'
+        if len(self.requires) > 0:
+            xml += '    <requires>\n'
+            for p in self.requires:
+                if not p.kind:
+                    continue
+                xml += '      <%s' % p.kind
+                if p.compare:
+                    xml += ' compare="%s"' % p.compare
+                if p.version:
+                    xml += ' version="%s"' % p.version
+                xml += '>'
+                if p.value:
+                    xml += p.value
+                xml += '</%s>\n' % p.kind
+            xml += '    </requires>\n'
         if len(self.custom) > 0:
             xml += '    <custom>\n'
             for key in self.custom:
@@ -431,6 +463,20 @@ class Component(object):
             if p.kind == kind:
                 provs.append(p)
         return provs
+
+    def add_require(self, require):
+        """ Add a require object if it does not already exist """
+        for p in self.requires:
+            if p.value == require.value:
+                return
+        self.requires.append(require)
+
+    def get_require_by_kind(self, kind, value):
+        """ Returns a requires object of a specific value """
+        for r in self.requires:
+            if r.kind == kind and r.value == value:
+                return r
+        return None
 
     def validate(self):
         """ Parse XML data """
@@ -540,6 +586,13 @@ class Component(object):
                     prov = Provide()
                     prov._parse_tree(c2)
                     self.add_provide(prov)
+
+            # <requires>
+            elif c1.tag == 'requires':
+                for c2 in c1:
+                    req = Require()
+                    req._parse_tree(c2)
+                    self.add_require(req)
 
             # <kudos>
             elif c1.tag == 'kudos':

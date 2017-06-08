@@ -76,6 +76,11 @@ Enhancemets:
   <provides>
     <firmware type="flashed">40338ceb-b966-4eae-adae-9c32edfcc484</firmware>
   </provides>
+  <requires>
+    <id compare="ge" version="0.8.2">org.freedesktop.fwupd</id>
+    <firmware compare="regex" version="BOT03.0[0-1]_*">bootloader</firmware>
+    <firmware compare="eq" version="USB:0x046X">vendor-id</firmware>
+  </requires>
   <keywords>
     <keyword>one</keyword>
     <keyword>two</keyword>
@@ -141,6 +146,11 @@ Enhancemets:
     assert app.developer_name == 'Hughski Limited', app.developer_name
     tmp = app.get_provides_by_kind('firmware-flashed')[0].value
     assert tmp == '40338ceb-b966-4eae-adae-9c32edfcc484', tmp
+    req = app.get_require_by_kind('id', 'org.freedesktop.fwupd')
+    assert req.kind == 'id', req.kind
+    assert req.compare == 'ge', req.compare
+    assert req.version == '0.8.2', req.version
+    assert req.value == 'org.freedesktop.fwupd', req.value
     assert len(app.releases) == 1
     assert len(app.keywords) == 2
     for rel in app.releases:
